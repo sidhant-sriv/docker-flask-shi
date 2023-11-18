@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: postgres # We will be using postgresql as our database
+  web:
+    image: gubtullu
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"

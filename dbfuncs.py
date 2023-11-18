@@ -2,20 +2,27 @@
 
 import sqlalchemy as sqla
 from sqlalchemy.orm import sessionmaker
-
+import time
 
 # Create a database connection to the database postres username: postgres password: admin
 def create_db_connection():
-    try:
-        engine = sqla.create_engine(
-            'postgresql://postgres:admin@localhost:5432/postgres')
-        connection = engine.connect()
-        return connection
-    except Exception as e:
-        print("Error connecting to the database:", str(e))
-        return None
-# Create a table called names in the database
-conn = create_db_connection()
+    max_retries = 5
+    retries = 0
+
+    while retries < max_retries:
+        try:
+            engine = sqla.create_engine('postgresql://postgres:admin@db:5432/postgres')
+            connection = engine.connect()
+            print("Successfully connected to the database.")
+            return connection
+        except Exception as e:
+            print("Error connecting to the database:", str(e))
+            retries += 1
+            print(f"Retrying in 5 seconds... (Attempt {retries}/{max_retries})")
+            time.sleep(1)
+
+    print("Max retries reached. Unable to connect to the database.")
+    return None
 
 def create_table(engine):
     try:
@@ -28,7 +35,6 @@ def create_table(engine):
     except Exception as e:
         print("Error creating table:", str(e))
         return False
-create_table(conn)
 
 # Insert a name into the database
 def insert_name(engine, name):
