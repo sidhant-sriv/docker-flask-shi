@@ -4,6 +4,7 @@ import sqlalchemy as sqla
 from sqlalchemy.orm import sessionmaker
 import time
 
+
 # Create a database connection to the database postres username: postgres password: admin
 def create_db_connection():
     max_retries = 5
@@ -11,9 +12,10 @@ def create_db_connection():
 
     while retries < max_retries:
         try:
-            engine = sqla.create_engine('postgresql://postgres:admin@db:5432/postgres')
+            engine = sqla.create_engine("postgresql://postgres:admin@db:5432/postgres")
             connection = engine.connect()
             print("Successfully connected to the database.")
+
             return connection
         except Exception as e:
             print("Error connecting to the database:", str(e))
@@ -24,17 +26,22 @@ def create_db_connection():
     print("Max retries reached. Unable to connect to the database.")
     return None
 
+
 def create_table(engine):
     try:
         Session = sessionmaker(bind=engine)
         session = Session()
         session.execute(
-            sqla.text("CREATE TABLE IF NOT EXISTS names (id SERIAL PRIMARY KEY, name VARCHAR(255))"))
+            sqla.text(
+                "CREATE TABLE IF NOT EXISTS names (id SERIAL PRIMARY KEY, name VARCHAR(255))"
+            )
+        )
         session.commit()
         return True
     except Exception as e:
         print("Error creating table:", str(e))
         return False
+
 
 # Insert a name into the database
 def insert_name(engine, name):
@@ -42,13 +49,17 @@ def insert_name(engine, name):
         Session = sessionmaker(bind=engine)
         session = Session()
         session.execute(
-        sqla.text("INSERT INTO names (name) VALUES ('{}')".format(name)))
+            sqla.text("INSERT INTO names (name) VALUES ('{}')".format(name))
+        )
         session.commit()
         return True
     except Exception as e:
         print("Error inserting name:", str(e))
         return False
+
+
 # insert_name(conn, 'John')
+
 
 # Get all the names from the database
 def get_names(engine):
@@ -61,7 +72,9 @@ def get_names(engine):
         print("Error getting names:", str(e))
         return None
 
+
 # Delete a name from the database
+
 
 def delete_name(engine, idno):
     """
@@ -82,6 +95,7 @@ def delete_name(engine, idno):
     except Exception as e:
         print("Error deleting name:", str(e))
         return False
+
 
 # Update a name in the database
 def update_name(engine, id, name):
@@ -104,7 +118,6 @@ def update_name(engine, id, name):
     except Exception as e:
         print("Error updating name:", str(e))
         return False
-
 
 
 # Delete everything from the database

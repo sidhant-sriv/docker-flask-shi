@@ -1,5 +1,12 @@
 from flask import Flask, request, jsonify
-from dbfuncs import create_db_connection, create_table, insert_name, get_names, delete_name, update_name
+from dbfuncs import (
+    create_db_connection,
+    create_table,
+    insert_name,
+    get_names,
+    delete_name,
+    update_name,
+)
 
 app = Flask(__name__)
 
@@ -11,46 +18,48 @@ create_table(conn)
 # Create a route to insert a name into the database
 
 
-@app.route('/newname', methods=['POST'])
+@app.route("/newname", methods=["POST"])
 def newname():
-    name = request.json['name']
+    name = request.json["name"]
     if insert_name(conn, name):
-        return jsonify({'result': 'success'})
+        return jsonify({"result": "success"})
     else:
-        return jsonify({'result': 'failure'})
+        return jsonify({"result": "failure"})
+
 
 # Create a route to get all the names from the database
 
 
-@app.route('/getnames', methods=['GET'])
+@app.route("/getnames", methods=["GET"])
 def getnames():
     names = get_names(conn)
     if names is not None:
-        return jsonify({'result': [{'id': row[0], 'name': row[1]} for row in names]})
+        return jsonify({"result": [{"id": row[0], "name": row[1]} for row in names]})
     else:
-        return jsonify({'result': 'failure'})
+        return jsonify({"result": "failure"})
 
 
 # Create a route to update a name in the database
-@app.route('/updatename', methods=['PUT'])
+@app.route("/updatename", methods=["PUT"])
 def updatename():
-    idno = request.json['id']
-    name = request.json['name']
+    idno = request.json["id"]
+    name = request.json["name"]
     if update_name(conn, idno, name):
-        return jsonify({'result': 'success'})
+        return jsonify({"result": "success"})
     else:
-        return jsonify({'result': 'failure'})
+        return jsonify({"result": "failure"})
+
 
 # Create a route to delete a name from the database
 
 
-@app.route('/deletename', methods=['DELETE'])
+@app.route("/deletename", methods=["DELETE"])
 def deletename():
-    idno = request.json['id']
+    idno = request.json["id"]
     if delete_name(conn, idno):
-        return jsonify({'result': 'success'})
+        return jsonify({"result": "success"})
     else:
-        return jsonify({'result': 'failure'})
+        return jsonify({"result": "failure"})
 
 
-app.run(host='0.0.0.0', port=5000)
+app.run(host="0.0.0.0", port=5000)
