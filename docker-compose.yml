@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: postgres # We will be using postgresql as our database
   web:
-    image: gubtullu
+    build: .
     depends_on:
       - db
     ports:
